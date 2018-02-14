@@ -27,7 +27,7 @@
             待完成
             <div class="item" v-for="(todo,index) in list">
                 {{todo.title}}
-                <button @click="remove(index)">删除</button>
+                <button @click="remove(todo.id)">删除</button>
                 <button @click="setCurrent(todo)">更新</button>
             </div>
         </div>

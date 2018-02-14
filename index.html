@@ -25,7 +25,8 @@
     <div class="task-list">
         <div class="wrapper">
             待完成
-            <div class="item" v-for="(todo,index) in list">
+            <div v-if="!todo.completed" class="item" v-for="(todo,index) in list">
+                <button @click="toggleComplete(todo.id)">完成</button>
                 {{todo.title}}
                 <button @click="remove(todo.id)">删除</button>
                 <button @click="setCurrent(todo)">更新</button>
@@ -35,10 +36,11 @@
     <div class="task-list">
         <div class="wrapper">
             已完成
-            <div class="complete item">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa dolorem laborum rem! Consequuntur cum
-                deleniti ex facilis fugiat ipsa ipsum laboriosam modi neque, nesciunt quasi quidem quo sint soluta,
-                suscipit.
+            <div v-if="todo.completed" class="item completed" v-for="(todo,index) in list">
+                <button @click="toggleComplete(todo.id)">待完成</button>
+                {{todo.title}}
+                <button @click="remove(todo.id)">删除</button>
+                <button @click="setCurrent(todo)">更新</button>
             </div>
         </div>
     </div>

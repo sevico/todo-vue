@@ -28,16 +28,19 @@
     </form>
     <div class="task-list">
         <div class="wrapper">
-            待完成
+            <div class="segment-title">待完成</div>
             <task :todo="todo" v-if="!todo.completed" v-for="(todo,index) in list"></task>
         </div>
     </div>
     <div class="task-list">
         <div class="wrapper">
-            已完成
+            <div class="segment-title">已完成</div>
             <div v-if="todo.completed" class="item completed" v-for="(todo,index) in list">
-                <button @click="toggleComplete(todo.id)">待完成</button>
-                {{todo.title}}
+                <div @click="toggleComplete(todo.id)" class="toggle-complete"></div>
+                <span class="title">
+                    {{todo.title}}
+                </span>
+
                 <button @click="remove(todo.id)">删除</button>
                 <button @click="setCurrent(todo)">更新</button>
             </div>
@@ -46,8 +49,10 @@
 </div>
 <template id="task-tpl">
     <div class="item">
-        <button @click="action('toggleComplete',todo.id)">完成</button>
-        {{todo.title}}
+        <div @click="action('toggleComplete',todo.id)" class="toggle-complete"></div>
+        <span class="title">
+                    {{todo.title}}
+        </span>
         <button @click="action('remove',todo.id)">删除</button>
         <button @click="action('setCurrent',todo)">更新</button>
         <button @click="action('toggleDetail',todo.id)">详情</button>

@@ -15,9 +15,11 @@
         data: {
             list: [],
             current: {},
+            lastId:0,
         },
         mounted: function () {
             this.list = ms.get('list') || this.list
+            this.lastId=ms.get('last_id') || this.lastId
             this.checkAlerts()
             setInterval(() => {
                 this.checkAlerts()
@@ -86,7 +88,9 @@
                 this.list.splice(index, 1);
             },
             next_id: function () {
-                return this.list.length + 1;
+                this.lastId+=1
+                ms.set('lastId',this.lastId)
+                return this.lastId
             },
             setCurrent: function (todo) {
                 this.current = Object.assign({}, todo)

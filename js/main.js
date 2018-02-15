@@ -1,4 +1,15 @@
 ;(function () {
+    var Event = new Vue()
+
+    Vue.component('task',{
+        template:"#task-tpl",
+        props:['todo'],
+        methods:{
+            action:function (name,params) {
+                Event.$emit(name,params)
+            }
+        }
+    })
     new Vue({
         el: "#main",
         data: {
@@ -7,9 +18,45 @@
         },
         mounted: function () {
             this.list = ms.get('list') || this.list
+            this.checkAlerts()
+            setInterval(()=>{
+                this.checkAlerts()
+            },1000)
+            Event.$on('remove', (id)=> {
+                if(id) {
+                    this.remove(id)
+                }
+            })
+            Event.$on('toggleComplete',(id)=>{
+               if(id){
+                   console.log("toggleComplete")
+                   this.toggleComplete(id)
+               }
+            })
+            Event.$on('setCurrent',(todo)=>{
+                this.setCurrent(todo)
+            })
 
+},
+    methods: {
+        checkAlerts:function () {
+            this.list.forEach((row,i)=>{
+                if(!row.alertAt || row.alertConfirmed) {
+                    return
+                }else{
+                    let alertAt = row.alertAt
+                    console.log('alertAt:',alertAt)
+                    alertAt = new Date(alertAt)
+                    let timeStapm=alertAt.getTime()
+                    let now = (new Date()).getTime()
+                    if(now >= alertAt) {
+                        let confirmed = confirm(row.title)
+                        Vue.set(this.list[i],'alertConfirmed',confirmed)
+                    }
+                }
+
+            })
         },
-        methods: {
             merge: function () {
                 var current = this.current
                 var is_update = this.current.id;

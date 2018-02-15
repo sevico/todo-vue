@@ -1,12 +1,12 @@
 ;(function () {
     var Event = new Vue()
 
-    Vue.component('task',{
-        template:"#task-tpl",
-        props:['todo'],
-        methods:{
-            action:function (name,params) {
-                Event.$emit(name,params)
+    Vue.component('task', {
+        template: "#task-tpl",
+        props: ['todo'],
+        methods: {
+            action: function (name, params) {
+                Event.$emit(name, params)
             }
         }
     })
@@ -19,44 +19,47 @@
         mounted: function () {
             this.list = ms.get('list') || this.list
             this.checkAlerts()
-            setInterval(()=>{
+            setInterval(() => {
                 this.checkAlerts()
-            },1000)
-            Event.$on('remove', (id)=> {
-                if(id) {
+            }, 1000)
+            Event.$on('remove', (id) => {
+                if (id) {
                     this.remove(id)
                 }
             })
-            Event.$on('toggleComplete',(id)=>{
-               if(id){
-                   console.log("toggleComplete")
-                   this.toggleComplete(id)
-               }
+            Event.$on('toggleComplete', (id) => {
+                if (id) {
+                    console.log("toggleComplete")
+                    this.toggleComplete(id)
+                }
             })
-            Event.$on('setCurrent',(todo)=>{
+            Event.$on("toggleDetail", (id) => {
+                this.toggleDetail(id)
+            })
+            Event.$on('setCurrent', (todo) => {
                 this.setCurrent(todo)
             })
 
-},
-    methods: {
-        checkAlerts:function () {
-            this.list.forEach((row,i)=>{
-                if(!row.alertAt || row.alertConfirmed) {
-                    return
-                }else{
-                    let alertAt = row.alertAt
-                    console.log('alertAt:',alertAt)
-                    alertAt = new Date(alertAt)
-                    let timeStapm=alertAt.getTime()
-                    let now = (new Date()).getTime()
-                    if(now >= alertAt) {
-                        let confirmed = confirm(row.title)
-                        Vue.set(this.list[i],'alertConfirmed',confirmed)
-                    }
-                }
-
-            })
         },
+        methods: {
+            checkAlerts: function () {
+                this.list.forEach((row, i) => {
+                    if (!row.alertAt || row.alertConfirmed) {
+                        return
+                    } else {
+                        let alertAt = row.alertAt
+                        console.log('alertAt:', alertAt)
+                        alertAt = new Date(alertAt)
+                        let timeStapm = alertAt.getTime()
+                        let now = (new Date()).getTime()
+                        if (now >= alertAt) {
+                            let confirmed = confirm(row.title)
+                            Vue.set(this.list[i], 'alertConfirmed', confirmed)
+                        }
+                    }
+
+                })
+            },
             merge: function () {
                 var current = this.current
                 var is_update = this.current.id;
@@ -96,10 +99,14 @@
                     return value.id == id;
                 })
             },
+            toggleDetail: function (id) {
+                let index = this.findIndexByID(id)
+                Vue.set(this.list[index],"showDetail",!this.list[index].showDetail)
+            },
             toggleComplete: function (id) {
                 let i = this.findIndexByID(id)
                 Vue.set(this.list[i], 'completed', !this.list[i].completed)
-            }
+            },
         },
         watch: {
             list: {
